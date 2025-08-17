@@ -1,0 +1,65 @@
+.piano {
+  display: flex;/*白鍵と黒鍵を横一列に並べる*/
+  align-items: flex-end; /*左端にそろえる*/
+  border: 1px solid #000;/*コンテナ周りの線の色*/
+  padding: 20px;/*コンテナ内側の余白*/
+  position: relative;/*この要素を基準に top left right bottom で位置を調整*/
+  top: 0px;
+}
+
+.white-key {
+  height: 148.5px;/*高さ*/
+  width: 80px;/*横幅*/
+  background-color: #fff;/*背景色*/
+  border: 1px solid #ccc;/*周りの線の色*/
+  margin-right: -5px;/*鍵盤の右側に余白*/
+  border-bottom-left-radius: 2px;/*左下の角を丸める*/
+  border-bottom-right-radius: 2px;/*右下の角を丸める*/
+}
+
+.black-key {
+  height: 100px;/*高さ*/
+  width: 35px;/*横幅*/
+  background-color: #000;/*背景色*/
+  color: #fff;/*テキストの色（入れない）*/
+  position: relative;/*この要素を基準に top left right bottom で位置を調整*/
+  top: -50px; /*下に移動*/
+  margin-left: -1px;/*横移動*/
+  margin-right: -6px;/*右に余白（次の白鍵との間隔を調整）*/
+  z-index: 1; /*黒鍵を白鍵の上にする（重なり順）*/
+  border-bottom-left-radius: 2px;/*左下の角を丸める*/
+  border-bottom-right-radius: 2px;/*右下の角を丸める*/
+}
+
+.white-key:last-child{
+    margin-right: 0px;    /*一番右の白鍵の右余白を消す*/
+}
+
+.black-key:last-child{
+    margin-right: 0px;    /*一番右の黒鍵の右余白を消す*/
+}
+
+
+.a{
+  position: relative;/*この要素を基準に top left right bottom で位置を調整*/
+  top: 0px;          /*下に移動*/
+  left: 0px;         /*右に移動*/
+}
+
+/*楽譜を貼るところ*/
+#drop-zone {
+    width: 800px;/*ドロップゾーンの幅を変更*/
+    height: 350px;/*ドロップゾーンの高さを変更*/
+    border: 2px dashed #ccc;/*ドロップゾーンの枠線:線の太さ　線の種類　線の色*/
+    text-align: center;/*ドロップゾーンの文字を中央に配置*/
+    line-height: 350px;/*行の高さを設定*/
+    font-size: 1.2em;/*文字のサイズを親要素の1.2倍にする*/
+    color: #999;/*テキストの文字の色*/
+    cursor: pointer;/*カーソルがドロップゾーンに来たら指のマークにする*/
+    margin: 0px auto;/*外側の余白*/
+}
+
+#drop-zone.highlight {/*画像を持ってきたときのドロップゾーンの色*/
+    background-color: #f0f0f0;/*背景の色*/
+    border-color: #333;/*枠の色*/
+}

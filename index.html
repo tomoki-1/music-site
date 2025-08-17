@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>電子ピアノ</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="a">
+        <h1>電子ピアノ</h1>
+    </div>
+
+    <div id="image-container"></div>
+        <div id="drop-zone">ここに楽譜の画像をドラッグ＆ドロップ</div>
+
+    <div class="piano">
+        <div class="white-key" data-note="-4A"></div>
+        <div class="black-key" data-note="-4B"></div>
+        <div class="white-key" data-note="-4H"></div>
+
+        <div class="white-key" data-note="-3C"></div>
+        <div class="black-key" data-note="-3Des"></div>
+        <div class="white-key" data-note="-3D"></div>
+        <div class="black-key" data-note="-3Es"></div>
+        <div class="white-key" data-note="-3E"></div>
+        <div class="white-key" data-note="-3F"></div>
+        <div class="black-key" data-note="-3Ges"></div>
+        <div class="white-key" data-note="-3G"></div>
+        <div class="black-key" data-note="-3As"></div>
+        <div class="white-key" data-note="-3A"></div>
+        <div class="black-key" data-note="-3B"></div>
+        <div class="white-key" data-note="-3H"></div>
+        
+        <div class="white-key" data-note="-2C"></div>
+        <div class="black-key" data-note="-2Des"></div>
+        <div class="white-key" data-note="-2D"></div>
+        <div class="black-key" data-note="-2Es"></div>
+        <div class="white-key" data-note="-2E"></div>
+        <div class="white-key" data-note="-2F"></div>
+        <div class="black-key" data-note="-2Ges"></div>
+        <div class="white-key" data-note="-2G"></div>
+        <div class="black-key" data-note="-2As"></div>
+        <div class="white-key" data-note="-2A"></div>
+        <div class="black-key" data-note="-2B"></div>
+        <div class="white-key" data-note="-2H"></div>
+
+        <div class="white-key" data-note="-1C"></div>
+        <div class="black-key" data-note="-1Des"></div>
+        <div class="white-key" data-note="-1D"></div>
+        <div class="black-key" data-note="-1Es"></div>
+        <div class="white-key" data-note="-1E"></div>
+        <div class="white-key" data-note="-1F"></div>
+        <div class="black-key" data-note="-1Ges"></div>
+        <div class="white-key" data-note="-1G"></div>
+        <div class="black-key" data-note="-1As"></div>
+        <div class="white-key" data-note="-1A"></div>
+        <div class="black-key" data-note="-1B"></div>
+        <div class="white-key" data-note="-1H"></div>
+
+        <div class="white-key" data-note="0C"></div>
+        <div class="black-key" data-note="0Des"></div>
+        <div class="white-key" data-note="0D"></div>
+        <div class="black-key" data-note="0Es"></div>
+        <div class="white-key" data-note="0E"></div>
+        <div class="white-key" data-note="0F"></div>
+        <div class="black-key" data-note="0Ges"></div>
+        <div class="white-key" data-note="0G"></div>
+        <div class="black-key" data-note="0As"></div>
+        <div class="white-key" data-note="0A"></div>
+        <div class="black-key" data-note="0B"></div>
+        <div class="white-key" data-note="0H"></div>
+
+        <div class="white-key" data-note="1C"></div>
+        <div class="black-key" data-note="1Des"></div>
+        <div class="white-key" data-note="1D"></div>
+        <div class="black-key" data-note="1Es"></div>
+        <div class="white-key" data-note="1E"></div>
+        <div class="white-key" data-note="1F"></div>
+        <div class="black-key" data-note="1Ges"></div>
+        <div class="white-key" data-note="1G"></div>
+        <div class="black-key" data-note="1As"></div>
+        <div class="white-key" data-note="1A"></div>
+        <div class="black-key" data-note="1B"></div>
+        <div class="white-key" data-note="1H"></div>
+
+        <div class="white-key" data-note="2C"></div>
+        <div class="black-key" data-note="2Des"></div>
+        <div class="white-key" data-note="2D"></div>
+        <div class="black-key" data-note="2Es"></div>
+        <div class="white-key" data-note="2E"></div>
+        <div class="white-key" data-note="2F"></div>
+        <div class="black-key" data-note="2Ges"></div>
+        <div class="white-key" data-note="2G"></div>
+        <div class="black-key" data-note="2As"></div>
+        <div class="white-key" data-note="2A"></div>
+        <div class="black-key" data-note="2B"></div>
+        <div class="white-key" data-note="2H"></div>
+
+        <div class="white-key" data-note="3C"></div>
+        <div class="black-key" data-note="3Des"></div>
+        <div class="white-key" data-note="3D"></div>
+        <div class="black-key" data-note="3Es"></div>
+        <div class="white-key" data-note="3E"></div>
+        <div class="white-key" data-note="3F"></div>
+        <div class="black-key" data-note="3Ges"></div>
+        <div class="white-key" data-note="3G"></div>
+        <div class="black-key" data-note="3As"></div>
+        <div class="white-key" data-note="3A"></div>
+        <div class="black-key" data-note="3B"></div>
+        <div class="white-key" data-note="3H"></div>
+
+        <div class="white-key" data-note="4C"></div>
+
+        <script src="script.js"></script>
+        </div>
+</body>
+</html>
