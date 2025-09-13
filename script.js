@@ -174,7 +174,7 @@ document.addEventListener('DOMContentLoaded', () => { // HTMLが準備できて�
                     if (frequency && !activeOscillators[note]) { // もしそれが見つかって、その音が鳴っていない状態なら、音を鳴らすための処理に進む
                         const oscillator = audioContext.createOscillator(); // 音の波形を生成するWeb Audio APIの部品（オシレーター）を作成
                         const gainNode = audioContext.createGain(); // 音量を制御する部品（ゲインノード）を作成
-                        oscillator.type = 'Sawtooth'; // オシレーターが生成する音の波形を設定
+                        oscillator.type = 'Sawtooth Wave'; // オシレーターが生成する音の波形を設定
                         oscillator.frequency.setValueAtTime(frequency, audioContext.currentTime); // オシレーターに各鍵盤に対応する周波数を設定
                         gainNode.gain.setValueAtTime(1.0, audioContext.currentTime); // ゲインノードの初期音量を1.0に設定（最大音量）
                         oscillator.connect(gainNode); gainNode.connect(audioContext.destination); // 音の信号が流れる経路を設定（オシレーター → ゲインノード → スピーカー）
