@@ -56,7 +56,10 @@
     font-size: 1.2em;/*文字のサイズを親要素の1.2倍にする*/
     color: #999;/*テキストの文字の色*/
     cursor: pointer;/*カーソルがドロップゾーンに来たら指のマークにする*/
-    margin: 0px auto;/*外側の余白*/
+    position: absolute;
+    top: 35%;
+    left: 50%;
+    transform: translate(-50%, -50%);
 }
 
 #drop-zone.highlight {/*画像を持ってきたときのドロップゾーンの色*/
@@ -69,7 +72,10 @@
 #image-container {
     width: 800px; /* ドロップゾーンの幅に合わせる */
     height: 350px; /* ドロップゾーンの高さに合わせる */
-    margin: 0px auto;
+    position: absolute;
+    top: 35%;
+    left: 50%;
+    transform: translate(-50%, -50%);
     border: 2px dashed transparent; /* 枠線を透明にしてドロップゾーンの代わりにする */
     position: relative;
     display: flex; /* 画像を中央に配置するためにフレックスボックスを使用 */
