@@ -23,18 +23,16 @@ document.addEventListener('DOMContentLoaded', () => { // HTMLが準備できて�
         dropZone.classList.remove('highlight'); // ドラッグ中につけていた名前を外す
         const files = e.dataTransfer.files; // ドロップされた情報を"files"に入れる
         if (files.length > 0) { // ファイルが一つ以上かを確認
-        const file = files[0]; // ドロップされたファイルリストの最初のファイルを取る
-        if (file.type.startsWith('image/')) { // 取ったファイルが画像かどうかを判断
-        const reader = new FileReader(); // ファイルを読み込むための道具(FileReader)を用意
-        reader.onload = (event) => { // ファイルを読み込めた時の動作
-                const img = new Image(); // 画像を貼り付けるためのHTMLタグを作成
-                img.src = event.target.result; // 読み込んだデータURLを"画像の場所"として設定→ウェブ上で表示できる
-                img.style.maxWidth = '100%'; // 表示する画像のサイズやレイアウトを調整
-                img.style.display = 'block'; // 同じ↑
-                imageContainer.innerHTML = ''; // 画像を表示する場所の中身を一回無くす
-                imageContainer.appendChild(img); // 無くしたところに画像を入れて表示
-                dropZone.style.display = 'none'; // ドロップゾーンの役割が終わったから非表示にする
-            };
+            const file = files[0]; // ドロップされたファイルリストの最初のファイルを取る
+            if (file.type.startsWith('image/')) { // 取ったファイルが画像かどうかを判断
+                const reader = new FileReader(); // ファイルを読み込むための道具(FileReader)を用意
+                reader.onload = (event) => { // ファイルを読み込めた時の動作
+                    const img = new Image(); // 画像を貼り付けるためのHTMLタグを作成
+                    img.src = event.target.result; // 読み込んだデータURLを"画像の場所"として設定→ウェブ上で表示できる
+                    imageContainer.innerHTML = ''; // 画像を表示する場所の中身を一回無くす
+                    imageContainer.appendChild(img); // 無くしたところに画像を入れて表示
+                    dropZone.style.display = 'none'; // ドロップゾーンの役割が終わったから非表示にする
+                };
             reader.readAsDataURL(file); // ファイルの内容をデータURLで読み込む
         }
         else {alert('画像ファイルのみドロップ可能です。');} // 画像ファイルではなかったら警告を表示
