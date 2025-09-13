@@ -32,6 +32,7 @@ document.addEventListener('DOMContentLoaded', () => { // HTMLが準備できて�
                     imageContainer.innerHTML = ''; // 画像を表示する場所の中身を一回無くす
                     imageContainer.appendChild(img); // 無くしたところに画像を入れて表示
                     dropZone.style.display = 'none'; // ドロップゾーンの役割が終わったから非表示にする
+                    imageContainer.style.display = 'flex'; // 画像を中央に配置
                 };
             reader.readAsDataURL(file); // ファイルの内容をデータURLで読み込む
         }

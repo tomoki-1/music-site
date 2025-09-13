@@ -4,7 +4,8 @@
   border: 1px solid #000;/*コンテナ周りの線の色*/
   padding: 20px;/*コンテナ内側の余白*/
   position: relative;/*この要素を基準に top left right bottom で位置を調整*/
-  top: 0px;
+  top: 5px;
+  left: 0px;
 }
 
 .white-key {
@@ -48,18 +49,14 @@
 
 /*楽譜を貼るところ*/
 #drop-zone {
-    width: 800px;/*ドロップゾーンの幅を変更*/
-    height: 350px;/*ドロップゾーンの高さを変更*/
+    width: 100%;/*ドロップゾーンの幅を変更*/
+    height: 100%;/*ドロップゾーンの高さを変更*/
     border: 2px dashed #ccc;/*ドロップゾーンの枠線:線の太さ　線の種類　線の色*/
     text-align: center;/*ドロップゾーンの文字を中央に配置*/
     line-height: 350px;/*行の高さを設定*/
     font-size: 1.2em;/*文字のサイズを親要素の1.2倍にする*/
     color: #999;/*テキストの文字の色*/
     cursor: pointer;/*カーソルがドロップゾーンに来たら指のマークにする*/
-    position: absolute;
-    top: 35%;
-    left: 50%;
-    transform: translate(-50%, -50%);
 }
 
 #drop-zone.highlight {/*画像を持ってきたときのドロップゾーンの色*/
@@ -70,15 +67,13 @@
 
 
 #image-container {
-    width: 800px; /* ドロップゾーンの幅に合わせる */
-    height: 350px; /* ドロップゾーンの高さに合わせる */
+    width: 100%; /* ドロップゾーンの幅に合わせる */
+    height: 100%; /* ドロップゾーンの高さに合わせる */
     position: absolute;
-    top: 35%;
-    left: 50%;
-    transform: translate(-50%, -50%);
+    top: 0;
+    left: 0;
     border: 2px dashed transparent; /* 枠線を透明にしてドロップゾーンの代わりにする */
-    position: relative;
-    display: flex; /* 画像を中央に配置するためにフレックスボックスを使用 */
+    display: none; /* 画像を中央に配置するためにフレックスボックスを使用 */
     justify-content: center;
     align-items: center;
 }
@@ -87,4 +82,13 @@
     max-width: 100%; /* 画像の最大幅をコンテナの100%に制限 */
     max-height: 100%; /* 画像の最大高さをコンテナの100%に制限 */
     object-fit: contain; /* 縦横比を維持したまま、コンテナ内に収まるようにする */
+}
+
+
+/* 新しく追加するラッパー要素のスタイル */
+.drop-and-image-wrapper {
+  width: 800px;
+  height: 350px;
+  position: relative;
+  margin: 0px auto;
 }
