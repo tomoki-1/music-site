@@ -235,3 +235,86 @@ document.addEventListener('DOMContentLoaded', () => { // HTMLが準備できて�
         addColorChangeAndSoundListeners(blackKeys, activeBlackColor); // すべての黒鍵にこれらを適用
     })(); // スコープの隔離（定義された変数が他と混ざらないようにする）ここまで↑
 });
+
+
+const keyToNoteMap = {
+    'a': '0C',
+    'w': '0Des',
+    's': '0D',
+    'e': '0Es',
+    'd': '0E',
+    'f': '0F',
+    't': '0Ges',
+    'g': '0G',
+    'y': '0As',
+    'h': '0A',
+    'u': '0B',
+    'j': '0H',
+};
+
+
+
+const activeKeys = {}; // どのキーが現在押されているかを追跡する
+
+document.addEventListener('keydown', (e) => {
+    const key = e.key.toLowerCase();
+    const note = keyToNoteMap[key];
+
+    // 割り当てられたキーであり、かつ現在押されていない場合のみ実行
+    if (note && !activeKeys[key]) {
+        activeKeys[key] = true; // キーが押されたことを記録
+
+        const frequency = noteFrequencies[note];
+        if (frequency) {
+            if (!audioContext) {
+                audioContext = new (window.AudioContext || window.webkitAudioContext)();
+            }
+
+            const oscillator = audioContext.createOscillator();
+            const gainNode = audioContext.createGain();
+
+            oscillator.type = 'sawtooth'; // 音色をのこぎり波に設定
+            oscillator.frequency.setValueAtTime(frequency, audioContext.currentTime);
+            gainNode.gain.setValueAtTime(1.0, audioContext.currentTime);
+
+            oscillator.connect(gainNode);
+            gainNode.connect(audioContext.destination);
+
+            oscillator.start(0);
+            activeOscillators[note] = { oscillator, gainNode };
+
+            // 鍵盤の見た目を変更する（オプション）
+            const pianoKey = document.querySelector(`[data-note="${note}"]`);
+            if (pianoKey) {
+                pianoKey.style.backgroundColor = pianoKey.classList.contains('white-key') ? 'lightgray' : 'saddlebrown';
+            }
+        }
+    }
+});
+
+document.addEventListener('keyup', (e) => {
+    const key = e.key.toLowerCase();
+    const note = keyToNoteMap[key];
+
+    // 割り当てられたキーであり、かつ現在押されている場合のみ実行
+    if (note && activeKeys[key]) {
+        delete activeKeys[key]; // キーが離されたので記録を削除
+
+        // 鍵盤の見た目を元に戻す（オプション）
+        const pianoKey = document.querySelector(`[data-note="${note}"]`);
+        if (pianoKey) {
+            pianoKey.style.backgroundColor = pianoKey.classList.contains('white-key') ? '#fff' : '#000';
+        }
+
+        // 音を止める
+        if (activeOscillators[note]) {
+            const { oscillator, gainNode } = activeOscillators[note];
+            const now = audioContext.currentTime;
+            gainNode.gain.cancelScheduledValues(now);
+            gainNode.gain.setValueAtTime(gainNode.gain.value, now);
+            gainNode.gain.exponentialRampToValueAtTime(0.0001, now + 0.1);
+            oscillator.stop(now + 0.11);
+            delete activeOscillators[note];
+        }
+    }
+});
