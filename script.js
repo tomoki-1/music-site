@@ -161,160 +161,177 @@ document.addEventListener('DOMContentLoaded', () => { // HTMLが準備できて�
             '4C': 4186.01
         };
 
-        function addColorChangeAndSoundListeners(keys, activeColor) {
-            const originalColors = {}; // 各鍵盤の元の色を保存するための箱
-            keys.forEach(key => { // 取得した鍵盤を一つずつ処理
-                originalColors[key] = getComputedStyle(key).backgroundColor; // 各鍵盤の元の色を保存する
 
-                key.addEventListener('mousedown', () => { // 鍵盤の上でマウスが押されたとき
-                    if (!audioContext) {audioContext = new (window.AudioContext || window.webkitAudioContext)();} // 初めてクリックしたときにまだaudioContextが作られていなければそのときに作る
-                    key.style.backgroundColor = activeColor; // 鍵盤の色を設定されている色（activeColor）に変える
-                    const note = key.dataset.note;
-                    const frequency = noteFrequencies[note]; // クリックされた鍵盤をHTMLの鍵盤のところのdata-noteから見つけて対応する音の周波数を見つける
-                    if (frequency && !activeOscillators[note]) { // もしそれが見つかって、その音が鳴っていない状態なら、音を鳴らすための処理に進む
-                        const oscillator = audioContext.createOscillator(); // 音の波形を生成するWeb Audio APIの部品（オシレーター）を作成
-                        const gainNode = audioContext.createGain(); // 音量を制御する部品（ゲインノード）を作成
-                        oscillator.type = 'Sawtooth Wave'; // オシレーターが生成する音の波形を設定
-                        oscillator.frequency.setValueAtTime(frequency, audioContext.currentTime); // オシレーターに各鍵盤に対応する周波数を設定
-                        gainNode.gain.setValueAtTime(1.0, audioContext.currentTime); // ゲインノードの初期音量を1.0に設定（最大音量）
-                        oscillator.connect(gainNode); gainNode.connect(audioContext.destination); // 音の信号が流れる経路を設定（オシレーター → ゲインノード → スピーカー）
-                        oscillator.start(0); // 音の再生をすぐに開始
-                        activeOscillators[note] = { oscillator, gainNode }; // 再生中のオシレーターとゲインノードのペアをactiveOscillatorsに保存
-                        oscillator.onended = () => {delete activeOscillators[note];}; // オシレーターが完全に停止したらactiveOscillatorsからその記録を削除
-                    }
-                });
+        const keyToNoteMap = { // 特定の音が出るキーを割り当てる
+            'a': '0C',
+            'w': '0Des',
+            's': '0D',
+            'e': '0Es',
+            'd': '0E',
+            'f': '0F',
+            't': '0Ges',
+            'g': '0G',
+            'y': '0As',
+            'h': '0A',
+            'u': '0B',
+            'j': '0H',
+        };
 
-                key.addEventListener('mouseup', () => { // 鍵盤の上でマウスが離されたとき
-                    key.style.backgroundColor = originalColors[key]; // 鍵盤の色をoriginalColorsに保存してある色に戻す
-                    const note = key.dataset.note;
-                    if (activeOscillators[note]) { // もしその鍵盤の音がactiveOscillatorsに保存されていて鳴っていたら停止処理を行う
-                        const { oscillator, gainNode } = activeOscillators[note];
-                        const now = audioContext.currentTime;
-                        gainNode.gain.cancelScheduledValues(now);
-                        gainNode.gain.setValueAtTime(gainNode.gain.value, now);
-                        gainNode.gain.exponentialRampToValueAtTime(0.0001, now + 0.2); // 音量をゆっくり下げる
-                        oscillator.stop(now + 0.21); // 音量が下がった後にオシレーターを停止
-                    }
-                });
 
-                key.addEventListener('mouseout', () => { // マウスが鍵盤の外に出たとき
-                    key.style.backgroundColor = originalColors[key]; // 鍵盤の色をoriginalColorsに保存してある色に戻す
-                    const note = key.dataset.note;
-                    if (activeOscillators[note] && isMouseDown) { // マウスが押されたままでその音がなっていたらその音を消す
-                        const { oscillator, gainNode } = activeOscillators[note];
-                        const now = audioContext.currentTime;
-                        gainNode.gain.cancelScheduledValues(now);
-                        gainNode.gain.setValueAtTime(gainNode.gain.value, now);
-                        gainNode.gain.exponentialRampToValueAtTime(0.0001, now + 0.1); // さっきよりも早めに音量を下げる
-                        oscillator.stop(now + 0.11); // 音量が下がった後にオシレーターを停止
-                    }
-                });
 
-                key.addEventListener('mouseenter', () => { // マウスが鍵盤に入ってきたとき
-                    if (isMouseDown) { // もしマウスが押されたままその鍵盤に入ってきたら次の処理を実行
-                        key.style.backgroundColor = activeColor; // 鍵盤の色を設定されている色（activeColor）に変える
-                        const note = key.dataset.note;
-                        const frequency = noteFrequencies[note]; // クリックされた鍵盤をHTMLの鍵盤のところのdata-noteから見つけて対応する音の周波数を見つける
-                        if (frequency && !activeOscillators[note]) { // もしそれが見つかって、その音が鳴っていない状態なら、音を鳴らすための処理に進む
-                            const oscillator = audioContext.createOscillator(); // 音の波形を生成するWeb Audio APIの部品（オシレーター）を作成
-                            const gainNode = audioContext.createGain(); // 音量を制御する部品（ゲインノード）を作成
-                            oscillator.type = 'sine'; // オシレーターが生成する音の波形を設定
-                            oscillator.frequency.setValueAtTime(frequency, audioContext.currentTime); // オシレーターに各鍵盤に対応する周波数を設定
-                            gainNode.gain.setValueAtTime(1.0, audioContext.currentTime); // ゲインノードの初期音量を1.0に設定（最大音量）
-                            oscillator.connect(gainNode); gainNode.connect(audioContext.destination); // 音の信号が流れる経路を設定（オシレーター → ゲインノード → スピーカー）
-                            oscillator.start(0); // 音の再生をすぐに開始
-                            activeOscillators[note] = { oscillator, gainNode }; // 再生中のオシレーターとゲインノードのペアをactiveOscillatorsに保存
-                            oscillator.onended = () => {delete activeOscillators[note];}; // オシレーターが完全に停止したらactiveOscillatorsからその記録を削除
-                        }
-                    }
-                });
-            });
+
+
+        function setKeyColor(key, color) { // 操作対象の鍵盤(key)と色(color)を受け取る
+            key.style.backgroundColor = color; // cssの鍵盤の色を受け取った色に設定
         }
 
-        addColorChangeAndSoundListeners(whiteKeys, activeWhiteColor); // すべての白鍵にこれらを適用
-        addColorChangeAndSoundListeners(blackKeys, activeBlackColor); // すべての黒鍵にこれらを適用
-    })(); // スコープの隔離（定義された変数が他と混ざらないようにする）ここまで↑
-});
+        function startNote(note) {
+            const frequency = noteFrequencies[note]; // 音の名前に対応する周波数を見つける
 
-
-const keyToNoteMap = {
-    'a': '0C',
-    'w': '0Des',
-    's': '0D',
-    'e': '0Es',
-    'd': '0E',
-    'f': '0F',
-    't': '0Ges',
-    'g': '0G',
-    'y': '0As',
-    'h': '0A',
-    'u': '0B',
-    'j': '0H',
-};
-
-
-
-const activeKeys = {}; // どのキーが現在押されているかを追跡する
-
-document.addEventListener('keydown', (e) => {
-    const key = e.key.toLowerCase();
-    const note = keyToNoteMap[key];
-
-    // 割り当てられたキーであり、かつ現在押されていない場合のみ実行
-    if (note && !activeKeys[key]) {
-        activeKeys[key] = true; // キーが押されたことを記録
-
-        const frequency = noteFrequencies[note];
-        if (frequency) {
+            // audiocontext(音を扱う基盤)がなかったら作る
             if (!audioContext) {
                 audioContext = new (window.AudioContext || window.webkitAudioContext)();
             }
 
-            const oscillator = audioContext.createOscillator();
-            const gainNode = audioContext.createGain();
+            // 音の周波数が見つからなかったり、すでに同じ音が鳴っていたら鳴らさないようにする
+            if (!frequency || activeOscillators[note]) {
+                return;
+            }
 
-            oscillator.type = 'sawtooth'; // 音色をのこぎり波に設定
-            oscillator.frequency.setValueAtTime(frequency, audioContext.currentTime);
-            gainNode.gain.setValueAtTime(1.0, audioContext.currentTime);
+            const oscillator = audioContext.createOscillator(); // オシレーター(音の波形を作る部分)を作る
+            const gainNode = audioContext.createGain(); // ゲインノード(音量制御)を作る
 
+            // 音の設定と経路の接続
+            oscillator.type = 'sine'; // 波形の設定
+            oscillator.frequency.setValueAtTime(frequency, audioContext.currentTime); // 周波数の設定
+            gainNode.gain.setValueAtTime(1.0, audioContext.currentTime); // 音量の設定(1.0が最大)
+            
             oscillator.connect(gainNode);
-            gainNode.connect(audioContext.destination);
+            gainNode.connect(audioContext.destination); // 音の信号の経路を設定
 
-            oscillator.start(0);
-            activeOscillators[note] = { oscillator, gainNode };
+            // 再生開始と状態保存
+            oscillator.start(0); // 音を鳴らし始める
+            activeOscillators[note] = { oscillator, gainNode }; // 音がなっている状態を記録
+            
+            // 停止後のクリーンアップ
+            oscillator.onended = () => { delete activeOscillators[note]; }; // 音が止まった時に記録を削除
+        }
 
-            // 鍵盤の見た目を変更する（オプション）
-            const pianoKey = document.querySelector(`[data-note="${note}"]`);
-            if (pianoKey) {
-                pianoKey.style.backgroundColor = pianoKey.classList.contains('white-key') ? 'lightgray' : 'saddlebrown';
+
+
+        function stopNote(note, duration = 0.2) {
+            if (activeOscillators[note]) { // 音がなっていなければ処理しない
+                const { oscillator, gainNode } = activeOscillators[note]; // 鳴っている音を取得
+                const now = audioContext.currentTime;
+                
+                // フェードアウト処理
+                gainNode.gain.cancelScheduledValues(now); // 音量設定がケンカしないように変化予定をキャンセル
+                gainNode.gain.setValueAtTime(gainNode.gain.value, now); // 今の音量を確定させる
+                gainNode.gain.exponentialRampToValueAtTime(0.0001, now + duration); // 音量減衰
+                
+                // 音量が下がった後にオシレーターを停止
+                oscillator.stop(now + duration + 0.01); 
             }
         }
-    }
-});
 
-document.addEventListener('keyup', (e) => {
-    const key = e.key.toLowerCase();
-    const note = keyToNoteMap[key];
 
-    // 割り当てられたキーであり、かつ現在押されている場合のみ実行
-    if (note && activeKeys[key]) {
-        delete activeKeys[key]; // キーが離されたので記録を削除
 
-        // 鍵盤の見た目を元に戻す（オプション）
-        const pianoKey = document.querySelector(`[data-note="${note}"]`);
-        if (pianoKey) {
-            pianoKey.style.backgroundColor = pianoKey.classList.contains('white-key') ? '#fff' : '#000';
+        function addListenersToKeys(keys, activeColor) {
+            const originalColors = {}; // 鍵盤の元の色を保存するところ
+
+            keys.forEach(key => { // すべての鍵盤に対して以下を実行
+                originalColors[key] = getComputedStyle(key).backgroundColor; // 元の色を保存
+                const note = key.dataset.note;
+                
+                // --- 発音と色変更をセットで行うロジック ---
+                const activateKey = () => {
+                    setKeyColor(key, activeColor);
+                    startNote(note); // 音を鳴らす関数を呼び出す
+                };
+
+                // --- 消音と色戻しをセットで行うロジック ---
+                const deactivateKey = (duration = 0.2) => {
+                    setKeyColor(key, originalColors[key]);
+                    stopNote(note, duration); // 音を止める関数を呼び出す
+                };
+
+                key.addEventListener('mousedown', activateKey); // 鍵盤が押されたらactivateKeyを実行
+
+                key.addEventListener('mouseup', () => deactivateKey(0.2)); // 鍵盤が離されたらdeactivateKeyを実行
+
+                // マウスを押したまま鍵盤から外れた時は早めに消す
+                key.addEventListener('mouseout', () => {
+                    if (isMouseDown) {
+                        deactivateKey(0.1); 
+                    } else {
+                        setKeyColor(key, originalColors[key]);
+                    }
+                });
+
+                // マウスが押されたまま鍵盤に入った時もactivateKeyを実行
+                key.addEventListener('mouseenter', () => {
+                    if (isMouseDown) {
+                        activateKey();
+                    }
+                });
+
+
+                
+            function handleKeyPressAndPlay(event) {
+                // 1. キーが押されたことを検知し、キー名を取得
+                const keyName = event.key.toLowerCase();
+                
+                // 2. 音符名（鍵盤名）への変換
+                const note = keyToNoteMap[keyName];
+
+                // 割り当てられたキーであり、かつ、まだ押されていない場合のみ処理
+                if (note && !activeKeys[keyName]) {
+                    event.preventDefault(); 
+                    
+                    // 状態を記録して、押しっぱなしによる重複再生を防ぐ
+                    activeKeys[keyName] = true; 
+
+                    // 3. 周波数の取得 (startNote内部で行われるため、ここでは noteNameがあれば十分)
+                    //    (noteFrequencies[note] の参照は startNote() 関数内で行われます)
+                    
+                    // 4. 音の再生（発音）
+                    startNote(note); 
+
+                    // 併せて、画面上の鍵盤の色を変更する処理
+                    const keyElement = noteToKeyElementMap[note]; 
+                    if (keyElement) {
+                        // activeColor (例: 'red')
+                        setKeyColor(keyElement, 'red'); 
+                    }
+                }
+            }
+
+            // キーボードが押された時に実行するリスナー
+            window.addEventListener('keydown', handleKeyPressAndPlay);
+
+
+
+            });
         }
 
-        // 音を止める
-        if (activeOscillators[note]) {
-            const { oscillator, gainNode } = activeOscillators[note];
-            const now = audioContext.currentTime;
-            gainNode.gain.cancelScheduledValues(now);
-            gainNode.gain.setValueAtTime(gainNode.gain.value, now);
-            gainNode.gain.exponentialRampToValueAtTime(0.0001, now + 0.1);
-            oscillator.stop(now + 0.11);
-            delete activeOscillators[note];
-        }
-    }
+
+
+
+
+
+
+        
+     
+
+
+
+
+
+
+
+
+
+        addColorChangeAndSoundListeners(whiteKeys, activeWhiteColor); // すべての白鍵にこれらを適用
+        addColorChangeAndSoundListeners(blackKeys, activeBlackColor); // すべての黒鍵にこれらを適用
+    })(); // スコープの隔離（定義された変数が他と混ざらないようにする）ここまで↑
 });
