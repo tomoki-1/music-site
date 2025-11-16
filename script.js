@@ -162,6 +162,7 @@ document.addEventListener('DOMContentLoaded', () => { // HTMLが準備できて�
         };
 
 
+
         const keyToNoteMap = { // 特定の音が出るキーを割り当てる
             'a': '0C',
             'w': '0Des',
@@ -175,12 +176,15 @@ document.addEventListener('DOMContentLoaded', () => { // HTMLが準備できて�
             'h': '0A',
             'u': '0B',
             'j': '0H',
+            'k': '1C',
         };
 
 
 
+        const activeKeys = {}; // 押されたキーを記録
 
 
+        
         function setKeyColor(key, color) { // 操作対象の鍵盤(key)と色(color)を受け取る
             key.style.backgroundColor = color; // cssの鍵盤の色を受け取った色に設定
         }
@@ -234,6 +238,15 @@ document.addEventListener('DOMContentLoaded', () => { // HTMLが準備できて�
             }
         }
 
+        function handleKeyPressAndPlay(event) {
+            const keyName = event.key.toLowerCase(); // 小文字に統一
+            const note = keyToNoteMap[keyName]; // キーに対応する音名を取得
+            if (note && !activeKeys[keyName]) { // 音名に対応するキーがあって押されていないとき実行
+                event.preventDefault(); // キーのデフォルト動作をキャンセル
+                activeKeys[keyName] = true; // キーを押したことを記録
+            }
+        }
+
 
 
         function addListenersToKeys(keys, activeColor) {
@@ -274,47 +287,10 @@ document.addEventListener('DOMContentLoaded', () => { // HTMLが準備できて�
                         activateKey();
                     }
                 });
-
-
-                
-            function handleKeyPressAndPlay(event) {
-                // 1. キーが押されたことを検知し、キー名を取得
-                const keyName = event.key.toLowerCase();
-                
-                // 2. 音符名（鍵盤名）への変換
-                const note = keyToNoteMap[keyName];
-
-                // 割り当てられたキーであり、かつ、まだ押されていない場合のみ処理
-                if (note && !activeKeys[keyName]) {
-                    event.preventDefault(); 
-                    
-                    // 状態を記録して、押しっぱなしによる重複再生を防ぐ
-                    activeKeys[keyName] = true; 
-
-                    // 3. 周波数の取得 (startNote内部で行われるため、ここでは noteNameがあれば十分)
-                    //    (noteFrequencies[note] の参照は startNote() 関数内で行われます)
-                    
-                    // 4. 音の再生（発音）
-                    startNote(note); 
-
-                    // 併せて、画面上の鍵盤の色を変更する処理
-                    const keyElement = noteToKeyElementMap[note]; 
-                    if (keyElement) {
-                        // activeColor (例: 'red')
-                        setKeyColor(keyElement, 'red'); 
-                    }
-                }
-            }
-
-            // キーボードが押された時に実行するリスナー
-            window.addEventListener('keydown', handleKeyPressAndPlay);
-
-
-
             });
         }
 
-
+        
 
 
 
